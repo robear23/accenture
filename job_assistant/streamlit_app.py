@@ -13,6 +13,7 @@ from job_assistant.schemas.models import (
     WriterOutput,
     AdvisorOutput,
 )
+import os
 
 # Page configuration
 st.set_page_config(
@@ -27,8 +28,14 @@ st.markdown("Analyzes job postings and generates tailored application materials 
 # Sidebar for configuration
 with st.sidebar:
     st.header("Configuration")
+    
+    # Try to load from Streamlit secrets
+    if "GOOGLE_API_KEY" in st.secrets:
+        os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+        settings.google_api_key = st.secrets["GOOGLE_API_KEY"]
+    
     if not settings.google_api_key:
-        st.error("GOOGLE_API_KEY not set. Please create a .env file.")
+        st.error("GOOGLE_API_KEY not set. Please create a .env file or add to Streamlit Secrets.")
         st.stop()
     
     st.success("API Key detected.")
